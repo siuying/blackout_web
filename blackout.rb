@@ -7,7 +7,6 @@ require "sinatra"
 require "rack/cache"
 require 'memcached'
 require 'cgi'
-require 'date'
 
 # $cache = Memcached.new
 # use Rack::Cache, :verbose => true, :metastore => $cache, :entitystore => $cache
@@ -18,24 +17,6 @@ end
 
 set :views, File.dirname(__FILE__) + '/views'
 set :public, File.dirname(__FILE__) + '/public'
-
-class Date
-  def to_gm_time
-    to_time(new_offset, :gm)
-  end
-
-  def to_local_time
-    to_time(new_offset(DateTime.now.offset-offset), :local)
-  end
-
-  private
-  def to_time(dest, method)
-    #Convert a fraction of a day to a number of microseconds
-    usec = (dest.sec_fraction * 60 * 60 * 24 * (10**6)).to_i
-    Time.send(method, dest.year, dest.month, dest.day, dest.hour, dest.min,
-              dest.sec, usec)
-  end
-end
 
 
 helpers do
@@ -66,18 +47,19 @@ helpers do
   def fetch_schedule(company, group)
     response = Typhoeus::Request.get("https://ignition.cloudant.com/#{settings.database}/_design/api/_list/time/schedules?startkey=[%222.0%22%2C%22#{company}-#{group}%22]&endkey=[%222.0%22%2C%22#{company}-#{group}%EF%AB%97%22]", :cache_timeout => 60)
     data = JSON(response.body)
+
     data.select {|r| r["schedule"] && r["schedule"].length > 0 }.collect do |r|
       r["schedule"].collect do |s|
         fromtime = "#{r["date"]} #{s["time"][0]} +0900"
         totime = "#{r["date"]} #{s["time"][1]} +0900"
         group = r["key"][1].split("-")[1] rescue nil
-        from = Time.parse(fromtime, '%Y%m%d %H%M %Z')
-        to = Time.parse(totime, '%Y%m%d %H%M %Z')
+        from = Time.parse(fromtime)
+        to = Time.parse(totime)
         
         {
           "group" => group,
-          "from" => Time.parse(fromtime, '%Y%m%d %H%M'),
-          "to" => Time.parse(totime, '%Y%m%d %H%M'),
+          "from" => Time.parse(fromtime),
+          "to" => Time.parse(totime),
           "message" => s["message"],
           "from_s" => fromtime,
           "to_s" => totime
@@ -143,7 +125,7 @@ get "/:prefecture/:city/:street" do
   @orig_schedules = @group["group"].collect { |g| fetch_schedule(@group["company"], g) } rescue []
   @schedules = @orig_schedules.flatten.select {|s| s["from"] > Time.now }.sort {|x,y| x["from"] <=> y["from"] }
   @next_schedule = @schedules.first
-  
+  puts @schedules 
   if @next_schedule
     if @next_schedule["from"] >= Time.now && @next_schedule["to"] < Time.now
       @next_schedule_title = "停電予定終了まで"
