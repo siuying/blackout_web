@@ -7,12 +7,39 @@
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.min.js"></script>
 	<script src="http://maps.google.com/maps/api/js?sensor=true"></script>
-	<script src="javascripts/blackout.js"></script>
+	<script src="/javascripts/blackout.js"></script>
+	<script>
+	$(document).ready(function() {
+		$("#home input").first().attr("placeholder", "検索：都道府県");
+
+		Blackout.onNameFound = function(prefecture, locality, sublocality) {
+			console.log(prefecture, locality, sublocality);
+			if (prefecture != null && locality != null && sublocality != null && sublocality != "") {
+				$.mobile.changePage("/" + prefecture + "/" + locality + "/" + sublocality, "slide", false, true);
+			} else {
+				$.mobile.changePage("#notfound", "pop", false, true);
+			}
+		};
+
+		Blackout.onNameNotFound = function() {
+		};
+
+		Blackout.onLocationFound = function(location) {
+			var lat = location.coords.latitude;
+			var lng = location.coords.longitude;
+			Blackout.findNameByLocation(lat, lng);
+		};
+
+		$("#GPS").click(function(){ Blackout.findCurrentLocation(); return false; });
+		$("#notfound-back").click(function(){ window.history.back(); return false; });
+	});
+	</script>
 </head>
 <body>
 	<div data-role="page" id="home">
 		<div data-role="header">
 			<h1><%= @prefecture %></h1>
+			<a id="GPS" href="" class="ui-btn-right">Use GPS</a>
 		</div>
 
 		<div data-role="content">
@@ -28,5 +55,20 @@
 		</div>
 	</div>
 
+	<div data-role="page" id="notfound">
+		<div data-role="header">
+			<h1>位置情報</h1>
+		</div>
+
+		<div data-role="content">
+			<h2>位置情報</h2>
+			<p>マニュアルで位置情報を入力してください。</p>
+			<a  data-role="button" data-rel="back" data-theme="c" id="notfound-back">はい</a>    
+		</div>
+		
+		<div data-role="footer">
+			<h5>Powered by Ignition Soft</h5>
+		</div>
+	</div>
 </body>
 </html>

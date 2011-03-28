@@ -7,12 +7,36 @@
 	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
 	<script src="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.min.js"></script>
 	<script src="http://maps.google.com/maps/api/js?sensor=true"></script>
-	<script src="javascripts/blackout.js"></script>
+	<script src="/javascripts/blackout.js"></script>
+	<script>
+	$(document).ready(function() {
+		$("#home input").first().attr("placeholder", "検索：都道府県");
+
+		Blackout.onNameFound = function(prefecture, locality, sublocality) {
+			console.log(prefecture, locality, sublocality);
+			if (prefecture != null && locality != null && sublocality != null && sublocality != "") {
+				$.mobile.changePage("/" + prefecture + "/" + locality + "/" + sublocality, "slide", false, true);
+			}
+		};
+
+		Blackout.onNameNotFound = function() {
+		};
+
+		Blackout.onLocationFound = function(location) {
+			var lat = location.coords.latitude;
+			var lng = location.coords.longitude;
+			Blackout.findNameByLocation(lat, lng);
+		};
+
+		$("#GPS").click(function(){ Blackout.findCurrentLocation(); return false; });
+	});
+	</script>
 </head>
 <body>
 	<div data-role="page" id="home">
 		<div data-role="header">
 			<h1><%= @prefecture %> <%= @city %> <%= @street %></h1>
+			<a id="GPS" href="" class="ui-btn-right">Use GPS</a>
 		</div>
 
 		<div data-role="content">
@@ -28,7 +52,7 @@
 			<ul role="listbox" data-role="listview" id="schedules">
 				<% @schedules.each do |s| %>
 				<li>
-					<h3><%= s["from"].strftime("%d/%m %H%M") %> - <%= s["to"].strftime("%H%M") %></h3>
+					<h4><%= s["from"].strftime("%d/%m %H%M") %> - <%= s["to"].strftime("%H%M") %></h4>
 					<p><%= s["message"] %></p>
 					<p class="ui-li-aside"><strong><%= @company %><%=  s["group"] %></strong></p>
 				</li>
