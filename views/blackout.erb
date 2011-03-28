@@ -1,71 +1,58 @@
-<!DOCTYPE html>
-<html lang="ja">
-<head>
-	<meta charset=utf-8>
-	<title>計画停電</title>
-	<link rel="stylesheet" href="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.min.css" />
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js"></script>
-	<script src="http://code.jquery.com/mobile/1.0a2/jquery.mobile-1.0a2.min.js"></script>
-	<script src="http://maps.google.com/maps/api/js?sensor=true"></script>
-	<script src="/javascripts/blackout.js"></script>
-	<script>
-	$(document).ready(function() {
-		Blackout.onNameFound = function(prefecture, locality, sublocality) {
-			console.log(prefecture, locality, sublocality);
-			if (prefecture != null && locality != null && sublocality != null && sublocality != "") {
-				$.mobile.changePage("/" + prefecture + "/" + locality + "/" + sublocality, "slide", false, true);
-			}
-		};
+<script>
+$(document).ready(function() {
+	$("#home input").first().attr("placeholder", "検索：市区郡");
 
-		Blackout.onNameNotFound = function() {
-		};
+	Blackout.onNameFound = function(prefecture, locality, sublocality) {
+		if (prefecture != null && locality != null && sublocality != null && sublocality != "") {
+			$.mobile.changePage("/" + prefecture + "/" + locality + "/" + sublocality, "slide", false, true);
+		}
+	};
 
-		Blackout.onLocationFound = function(location) {
-			var lat = location.coords.latitude;
-			var lng = location.coords.longitude;
-			Blackout.findNameByLocation(lat, lng);
-		};
+	Blackout.onNameNotFound = function() {
+	};
 
-		$("#GPS").click(function(){ Blackout.findCurrentLocation(); return false; });
-	});
-	</script>
-</head>
-<body>
-	<div data-role="page" id="home">
-		<div data-role="header">
-			<a href="/<%= CGI.escape(@prefecture) %>/<%= CGI.escape(@city) %>" class="ui-btn-left" data-icon="back"><%= @street %></a>
-			<h1>計画停電</h1>
-			<a id="GPS" href="" class="ui-btn-right">Use GPS</a>
-		</div>
+	Blackout.onLocationFound = function(location) {
+		var lat = location.coords.latitude;
+		var lng = location.coords.longitude;
+		Blackout.findNameByLocation(lat, lng);
+	};
 
-		<div data-role="content">
-			<div class="ui-grid-a">
-				<div class="ui-block-a"><h1><%= @prefecture %></h1></div>
-				<div class="ui-block-b"><h2><%= @city %></h2></div>
-				<div class="ui-block-c"><h2></h2></div>
-				<div class="ui-block-d"><h2><%= @street %></h2></div>
-			</div><!-- /grid-a -->
-			<div>
-				<h3><%= @company %> グループ<%=  @group["group"].join(", ") %></h3>
-				<p><%= @next_schedule_title %></p>
-				<h1><%= @next_schedule_time %></h1>
-					<!-- <%= @orig_schedules.inspect %> -->
-			</div>
-			<ul role="listbox" data-role="listview" id="schedules">
-				<% @schedules.each do |s| %>
-				<li>
-					<h4><%= s["from"].in_time_zone.strftime("%d/%m %H%M") %> - <%= s["to"].in_time_zone.strftime("%H%M") %></h4>
-					<p><%= s["message"] %></p>
-					<p class="ui-li-aside"><strong><%= @company %><%=  s["group"] %></strong></p>
-				</li>
-				<% end %>
-			</ul>
-		</div>
-		
-		<div data-role="footer">
-			<h5>Powered by Ignition Soft</h5>
-		</div>
+	$("#GPS").click(function(){ Blackout.findCurrentLocation(); return false; });
+});
+</script>
+
+<div data-role="page" id="home">
+	<div data-role="header">
+		<a href="/<%= CGI.escape(@prefecture) %>/<%= CGI.escape(@city) %>" class="ui-btn-left" data-icon="back"><%= @street %></a>
+		<h1>計画停電</h1>
+		<a id="GPS" href="" class="ui-btn-right">Use GPS</a>
 	</div>
 
-</body>
-</html>
+	<div data-role="content">
+		<div class="ui-grid-a">
+			<div class="ui-block-a"><h1><%= @prefecture %></h1></div>
+			<div class="ui-block-b"><h2><%= @city %></h2></div>
+			<div class="ui-block-c"><h2></h2></div>
+			<div class="ui-block-d"><h2><%= @street %></h2></div>
+		</div><!-- /grid-a -->
+		<div>
+			<h3><%= @company %> グループ<%=  @group["group"].join(", ") %></h3>
+			<p><%= @next_schedule_title %></p>
+			<h1><%= @next_schedule_time %></h1>
+				<!-- <%= @orig_schedules.inspect %> -->
+		</div>
+		<ul role="listbox" data-role="listview" id="schedules">
+			<% @schedules.each do |s| %>
+			<li>
+				<h4><%= s["from"].in_time_zone.strftime("%d/%m %H%M") %> - <%= s["to"].in_time_zone.strftime("%H%M") %></h4>
+				<p><%= s["message"] %></p>
+				<p class="ui-li-aside"><strong><%= @company %><%=  s["group"] %></strong></p>
+			</li>
+			<% end %>
+		</ul>
+	</div>
+	
+	<div data-role="footer">
+		<h5>Powered by Ignition Soft</h5>
+	</div>
+</div>
