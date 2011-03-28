@@ -49,7 +49,7 @@
 				<h3><%= @company %> グループ<%=  @group["group"].join(", ") %></h3>
 				<p><%= @next_schedule_title %></p>
 				<h1><%= @next_schedule_time %></h1>
-					
+					<!-- <%= @orig_schedules.inspect %> -->
 			</div>
 			<ul role="listbox" data-role="listview" id="schedules">
 				<% @schedules.each do |s| %>

@@ -9,11 +9,11 @@ require 'memcached'
 require 'cgi'
 require 'date'
 
-$cache = Memcached.new
-use Rack::Cache, :verbose => true, :metastore => $cache, :entitystore => $cache
+# $cache = Memcached.new
+# use Rack::Cache, :verbose => true, :metastore => $cache, :entitystore => $cache
 
 configure do
-  set :database, 'blackout-dev'
+  set :database, 'blackout'
 end
 
 set :views, File.dirname(__FILE__) + '/views'
@@ -140,7 +140,7 @@ get "/:prefecture/:city/:street" do
   @group = fetch_blackout_group(@prefecture, @city, @street)
   halt 404 if @group.nil?
   
-  @orig_schedules = @group["group"].collect { |g| fetch_schedule(@group["company"], g) }
+  @orig_schedules = @group["group"].collect { |g| fetch_schedule(@group["company"], g) } rescue []
   @schedules = @orig_schedules.flatten.select {|s| s["from"] > Time.now }.sort {|x,y| x["from"] <=> y["from"] }
   @next_schedule = @schedules.first
   
