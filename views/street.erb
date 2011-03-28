@@ -12,13 +12,13 @@
 <body>
 	<div data-role="page" id="home">
 		<div data-role="header">
-			<h1>Prefecture</h1>
+			<h1><%= @prefecture %> <%= @city %></h1>
 		</div>
 
 		<div data-role="content">
-			<ul role="listbox" data-role="listview" id="prefecture" data-filter="true">
-				<% @prefectures.each do |p| %>
-				<li id="l-<%=  CGI.escape(p)  %>"><a href="/<%= CGI.escape(p) %>"><%=  p %></a></li>
+			<ul role="listbox" data-role="listview" id="city" data-filter="true">
+				<% @streets.each do |s| %>
+				<li id="l-<%=  CGI.escape(s)  %>"><a href="/<%= CGI.escape(@prefecture) %>/<%= CGI.escape(@city) %>/<%= CGI.escape(s) %>"><%= s %></a></li>
 				<% end %>
 			</ul>
 		</div>

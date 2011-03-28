@@ -12,13 +12,29 @@
 <body>
 	<div data-role="page" id="home">
 		<div data-role="header">
-			<h1><%= @prefecture %><%= @city %></h1>
+			<h1><%= @prefecture %> <%= @city %> <%= @street %></h1>
 		</div>
 
 		<div data-role="content">
-			<ul role="listbox" data-role="listview" id="blakcout" data-filter="true">
-				<h1><%= @company %> <%= @group["group"].join(",") %></h1>				
+			<div class="ui-grid-a">
+				<div class="ui-block-a"><h1><%= @prefecture %></h1></div>
+				<div class="ui-block-b"><h2><%= @city %></h2></div>
+				<div class="ui-block-c"><h2></h2></div>
+				<div class="ui-block-d"><h2><%= @street %></h2></div>
+			</div><!-- /grid-a -->
+			<div>
+				<h3><%= @company %> グループ<%=  @group["group"].join(", ") %></h3>
+			</div>
+			<ul role="listbox" data-role="listview" id="schedules">
+				<% @schedules.each do |s| %>
+				<li>
+					<h3><%= s["from"].strftime("%d/%m %H%M") %> - <%= s["to"].strftime("%H%M") %></h3>
+					<p><%= s["message"] %></p>
+					<p class="ui-li-aside"><strong><%= @company %><%=  s["group"] %></strong></p>
+				</li>
+				<% end %>
 			</ul>
+			
 		</div>
 		
 		<div data-role="footer">
