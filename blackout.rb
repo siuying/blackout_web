@@ -40,31 +40,31 @@ end
 
 helpers do
   def fetch_prefectures
-    response = Typhoeus::Request.get("http://ignition.cloudant.com/#{settings.database}/_design/api/_view/prefectures?group=true")  
+    response = Typhoeus::Request.get("http://ignition.cloudant.com/#{settings.database}/_design/api/_view/prefectures?group=true", :cache_timeout => 60)  
     data = JSON(response.body)
     return data["rows"].collect() {|r| r["key"]}    
   end
   
   def fetch_cities(prefecture)
-    response = Typhoeus::Request.get("http://ignition.cloudant.com/#{settings.database}/_design/api/_view/cities?group=true&startkey=[%22#{CGI.escape(prefecture)}%22]&endkey=[%22#{CGI.escape(prefecture)}%22%2C%22%EF%AB%97%22]")  
+    response = Typhoeus::Request.get("http://ignition.cloudant.com/#{settings.database}/_design/api/_view/cities?group=true&startkey=[%22#{CGI.escape(prefecture)}%22]&endkey=[%22#{CGI.escape(prefecture)}%22%2C%22%EF%AB%97%22]", :cache_timeout => 60)  
     data = JSON(response.body)
     return data["rows"].collect() {|r| r["key"][1] }    
   end
   
   def fetch_streets(prefecture, city)
-    response = Typhoeus::Request.get("http://ignition.cloudant.com/#{settings.database}/_design/api/_view/streets?group=true&startkey=[%22#{CGI.escape(prefecture)}%22%2C%22#{CGI.escape(city)}%22]&endkey=[%22#{CGI.escape(prefecture)}%22%2C%22#{CGI.escape(city)}%22%2C%22%EF%AB%97%22]")  
+    response = Typhoeus::Request.get("http://ignition.cloudant.com/#{settings.database}/_design/api/_view/streets?group=true&startkey=[%22#{CGI.escape(prefecture)}%22%2C%22#{CGI.escape(city)}%22]&endkey=[%22#{CGI.escape(prefecture)}%22%2C%22#{CGI.escape(city)}%22%2C%22%EF%AB%97%22]", :cache_timeout => 60)  
     data = JSON(response.body)
     return data["rows"].collect() {|r| r["key"][2] }    
   end
   
   def fetch_blackout_group(p, c, s)
-    response = Typhoeus::Request.get "http://ignition.cloudant.com/#{settings.database}/_design/api/_view/blackout?startkey=%22#{CGI.escape(p)}-#{CGI.escape(c)}-#{CGI.escape(s)}%22&endkey=%22#{CGI.escape(p)}-#{CGI.escape(c)}-#{CGI.escape(s)}%EF%AB%97%22"
+    response = Typhoeus::Request.get("http://ignition.cloudant.com/#{settings.database}/_design/api/_view/blackout?startkey=%22#{CGI.escape(p)}-#{CGI.escape(c)}-#{CGI.escape(s)}%22&endkey=%22#{CGI.escape(p)}-#{CGI.escape(c)}-#{CGI.escape(s)}%EF%AB%97%22", :cache_timeout => 60)
     data = JSON(response.body)
     data["rows"].first["value"] rescue {}
   end
   
   def fetch_schedule(company, group)
-    response = Typhoeus::Request.get "https://ignition.cloudant.com/#{settings.database}/_design/api/_list/time/schedules?startkey=[%222.0%22%2C%22#{company}-#{group}%22]&endkey=[%222.0%22%2C%22#{company}-#{group}%EF%AB%97%22]"
+    response = Typhoeus::Request.get("https://ignition.cloudant.com/#{settings.database}/_design/api/_list/time/schedules?startkey=[%222.0%22%2C%22#{company}-#{group}%22]&endkey=[%222.0%22%2C%22#{company}-#{group}%EF%AB%97%22]", :cache_timeout => 60)
     data = JSON(response.body)
     data.select {|r| r["schedule"] && r["schedule"].length > 0 }.collect do |r|
       r["schedule"].collect do |s|
