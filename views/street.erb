@@ -35,7 +35,7 @@
 <body>
 	<div data-role="page" id="home">
 		<div data-role="header">
-			<a href="/<%= CGI.escape(@prefecture) %>" rel="external" class="ui-btn-left" data-icon="back"><%= @city %></a>
+			<a href="/<%= CGI.escape(@prefecture) %>" class="ui-btn-left" data-icon="back"><%= @city %></a>
 			<h1>計画停電</h1>
 			<a id="GPS" href="" class="ui-btn-right">Use GPS</a>
 		</div>
@@ -43,7 +43,7 @@
 		<div data-role="content">
 			<ul role="listbox" data-role="listview" id="city" data-filter="true">
 				<% @streets.each do |s| %>
-				<li id="l-<%=  CGI.escape(s)  %>"><a rel="external" href="/<%= CGI.escape(@prefecture) %>/<%= CGI.escape(@city) %>/<%= CGI.escape(s) %>"><%= s %></a></li>
+				<li id="l-<%=  CGI.escape(s)  %>"><a href="/<%= CGI.escape(@prefecture) %>/<%= CGI.escape(@city) %>/<%= CGI.escape(s) %>"><%= s %></a></li>
 				<% end %>
 			</ul>
 		</div>

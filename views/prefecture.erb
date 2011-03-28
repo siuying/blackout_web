@@ -43,7 +43,7 @@
 		<div data-role="content">
 			<ul role="listbox" data-role="listview" id="prefecture" data-filter="true">
 				<% @prefectures.each do |p| %>
-				<li id="l-<%=  CGI.escape(p)  %>"><a rel="external" href="/<%= CGI.escape(p) %>"><%=  p %></a></li>
+				<li id="l-<%=  CGI.escape(p)  %>"><a href="/<%= CGI.escape(p) %>"><%=  p %></a></li>
 				<% end %>
 			</ul>
 		</div>
