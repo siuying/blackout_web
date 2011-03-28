@@ -35,6 +35,7 @@
 <body>
 	<div data-role="page" id="home">
 		<div data-role="header">
+			<a href="/<%= CGI.escape(@prefecture) %>" rel="external" class="ui-btn-left" data-icon="back"><%= @city %></a>
 			<h1><%= @prefecture %> <%= @city %></h1>
 			<a id="GPS" href="" class="ui-btn-right">Use GPS</a>
 		</div>
