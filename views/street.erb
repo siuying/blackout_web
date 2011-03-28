@@ -10,7 +10,7 @@
 	<script src="/javascripts/blackout.js"></script>
 	<script>
 	$(document).ready(function() {
-		$("#home input").first().attr("placeholder", "検索：都道府県");
+		$("#home input").first().attr("placeholder", "検索：大字通称");
 
 		Blackout.onNameFound = function(prefecture, locality, sublocality) {
 			console.log(prefecture, locality, sublocality);
@@ -42,7 +42,7 @@
 		<div data-role="content">
 			<ul role="listbox" data-role="listview" id="city" data-filter="true">
 				<% @streets.each do |s| %>
-				<li id="l-<%=  CGI.escape(s)  %>"><a href="/<%= CGI.escape(@prefecture) %>/<%= CGI.escape(@city) %>/<%= CGI.escape(s) %>"><%= s %></a></li>
+				<li id="l-<%=  CGI.escape(s)  %>"><a rel="external" href="/<%= CGI.escape(@prefecture) %>/<%= CGI.escape(@city) %>/<%= CGI.escape(s) %>"><%= s %></a></li>
 				<% end %>
 			</ul>
 		</div>
