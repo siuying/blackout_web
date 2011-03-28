@@ -48,6 +48,9 @@
 			</div><!-- /grid-a -->
 			<div>
 				<h3><%= @company %> グループ<%=  @group["group"].join(", ") %></h3>
+				<p><%= @next_schedule_title %></p>
+				<h1><%= @next_schedule_time %></h1>
+					
 			</div>
 			<ul role="listbox" data-role="listview" id="schedules">
 				<% @schedules.each do |s| %>
@@ -57,8 +60,8 @@
 					<p class="ui-li-aside"><strong><%= @company %><%=  s["group"] %></strong></p>
 				</li>
 				<% end %>
+				<%= @orig_schedules.inspect %>
 			</ul>
-			
 		</div>
 		
 		<div data-role="footer">

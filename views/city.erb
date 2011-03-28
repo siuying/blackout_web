@@ -13,11 +13,8 @@
 		$("#home input").first().attr("placeholder", "検索：都道府県");
 
 		Blackout.onNameFound = function(prefecture, locality, sublocality) {
-			console.log(prefecture, locality, sublocality);
 			if (prefecture != null && locality != null && sublocality != null && sublocality != "") {
 				$.mobile.changePage("/" + prefecture + "/" + locality + "/" + sublocality, "slide", false, true);
-			} else {
-				$.mobile.changePage("#notfound", "pop", false, true);
 			}
 		};
 
@@ -31,7 +28,6 @@
 		};
 
 		$("#GPS").click(function(){ Blackout.findCurrentLocation(); return false; });
-		$("#notfound-back").click(function(){ window.history.back(); return false; });
 	});
 	</script>
 </head>
@@ -48,22 +44,6 @@
 				<li id="l-<%=  CGI.escape(c)  %>"><a href="/<%= CGI.escape(@prefecture) %>/<%= CGI.escape(c) %>"><%= c %></a></li>
 				<% end %>
 			</ul>
-		</div>
-		
-		<div data-role="footer">
-			<h5>Powered by Ignition Soft</h5>
-		</div>
-	</div>
-
-	<div data-role="page" id="notfound">
-		<div data-role="header">
-			<h1>位置情報</h1>
-		</div>
-
-		<div data-role="content">
-			<h2>位置情報</h2>
-			<p>マニュアルで位置情報を入力してください。</p>
-			<a  data-role="button" data-rel="back" data-theme="c" id="notfound-back">はい</a>    
 		</div>
 		
 		<div data-role="footer">
