@@ -54,7 +54,7 @@
 			<ul role="listbox" data-role="listview" id="schedules">
 				<% @schedules.each do |s| %>
 				<li>
-					<h4><%= s["from"].strftime("%d/%m %H%M") %> - <%= s["to"].strftime("%H%M") %></h4>
+					<h4><%= s["from"].in_time_zone.strftime("%d/%m %H%M") %> - <%= s["to"].in_time_zone.strftime("%H%M") %></h4>
 					<p><%= s["message"] %></p>
 					<p class="ui-li-aside"><strong><%= @company %><%=  s["group"] %></strong></p>
 				</li>

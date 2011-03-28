@@ -8,6 +8,12 @@ require "rack/cache"
 require 'memcached'
 require 'cgi'
 
+require 'active_support'
+require 'active_support/core_ext/time/zones'
+require 'active_support/time_with_zone'
+
+Time.zone = "Japan"
+
 # $cache = Memcached.new
 # use Rack::Cache, :verbose => true, :metastore => $cache, :entitystore => $cache
 
@@ -55,11 +61,11 @@ helpers do
         group = r["key"][1].split("-")[1] rescue nil
         from = Time.parse(fromtime)
         to = Time.parse(totime)
-        
+
         {
           "group" => group,
-          "from" => Time.parse(fromtime),
-          "to" => Time.parse(totime),
+          "from" => Time.zone.parse(fromtime),
+          "to" => Time.zone.parse(totime),
           "message" => s["message"],
           "from_s" => fromtime,
           "to_s" => totime
@@ -71,7 +77,9 @@ helpers do
   def distance_of_time_in_words(from_time, to_time = 0)
     from_time = from_time.to_time if from_time.respond_to?(:to_time)
     to_time = to_time.to_time if to_time.respond_to?(:to_time)
-
+    from_time = from_time.time if from_time.respond_to?(:time)
+    to_time = to_time.time if to_time.respond_to?(:time)
+    
     distance_in_seconds = ((to_time - from_time).abs).ceil
     distance_in_minutes = ((to_time - from_time).abs/60).ceil % 60
     distance_in_hours = ((to_time - from_time).abs/3600).floor % 24
@@ -123,9 +131,9 @@ get "/:prefecture/:city/:street" do
   halt 404 if @group.nil?
   
   @orig_schedules = @group["group"].collect { |g| fetch_schedule(@group["company"], g) } rescue []
-  @schedules = @orig_schedules.flatten.select {|s| s["from"] > Time.now }.sort {|x,y| x["from"] <=> y["from"] }
+  @schedules = @orig_schedules.flatten.select {|s| s["from"] > Time.now }
   @next_schedule = @schedules.first
-  puts @schedules 
+
   if @next_schedule
     if @next_schedule["from"] >= Time.now && @next_schedule["to"] < Time.now
       @next_schedule_title = "停電予定終了まで"

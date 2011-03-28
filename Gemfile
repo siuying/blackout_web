@@ -8,3 +8,6 @@ gem "typhoeus"
 gem "sinatra"
 gem "rack-cache"
 gem "memcached"
+
+gem "tzinfo"
+gem "activesupport"
