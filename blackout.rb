@@ -97,7 +97,7 @@ helpers do
             
     min_words = (distance_in_minutes == 0) ? "" : "#{distance_in_minutes}分"
     hour_words = (distance_in_hours == 0) ? "" : "#{distance_in_hours}時"
-    day_words = (distance_in_days == 0) ? "" : "#{distance_in_days}時"
+    day_words = (distance_in_days == 0) ? "" : "#{distance_in_days}日"
     
     return "#{day_words}#{hour_words}#{min_words}"
   end
