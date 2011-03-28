@@ -131,16 +131,16 @@ get "/:prefecture/:city/:street" do
   halt 404 if @group.nil?
   
   @orig_schedules = @group["group"].collect { |g| fetch_schedule(@group["company"], g) } rescue []
-  @schedules = @orig_schedules.flatten.select {|s| s["from"] > Time.now }
+  @schedules = @orig_schedules.flatten.select {|s| s["from"].time > Time.zone.now.time }
   @next_schedule = @schedules.first
 
   if @next_schedule
-    if @next_schedule["from"] >= Time.now && @next_schedule["to"] < Time.now
+    if @next_schedule["from"].time >= Time.zone.now.time && @next_schedule["to"].time < Time.zone.now.time
       @next_schedule_title = "停電予定終了まで"
-      @next_schedule_time = distance_of_time_in_words(Time.now, @next_schedule["to"])
+      @next_schedule_time = distance_of_time_in_words(Time.zone.now, @next_schedule["to"])
     else
       @next_schedule_title = "計画停電まで"
-      @next_schedule_time = distance_of_time_in_words(@next_schedule["from"], Time.now)
+      @next_schedule_time = distance_of_time_in_words(@next_schedule["from"], Time.zone.now)
     end
   end
   
