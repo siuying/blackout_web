@@ -68,8 +68,8 @@ helpers do
     data = JSON(response.body)
     data.select {|r| r["schedule"] && r["schedule"].length > 0 }.collect do |r|
       r["schedule"].collect do |s|
-        fromtime = "#{r["date"]} #{s["time"][0]} Japan Standard Time"
-        totime = "#{r["date"]} #{s["time"][1]} Japan Standard Time"
+        fromtime = "#{r["date"]} #{s["time"][0]} +0900"
+        totime = "#{r["date"]} #{s["time"][1]} +0900"
         group = r["key"][1].split("-")[1] rescue nil
         from = Time.parse(fromtime, '%Y%m%d %H%M %Z')
         to = Time.parse(totime, '%Y%m%d %H%M %Z')
